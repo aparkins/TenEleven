@@ -100,9 +100,13 @@ public class GameBoard {
 
     public boolean canPlacePieceInPosition(GamePiece piece, Point position) {
         boolean flag = true;
-        for (int x = position.x; x < position.x + piece.getWidth(); x++)
-            for (int y = position.y; y < position.y + piece.getHeight(); y++)
-                flag &= !(piece.getEntry(x,y) && getEntry(x,y));
+        for (int x = position.x; x < position.x + piece.getWidth(); x++) {
+            for (int y = position.y; y < position.y + piece.getHeight(); y++) {
+                if (x >= getWidth() || y >= getHeight())
+                    return false;
+                flag &= !(piece.getEntry(x - position.x, y - position.y) && getEntry(x, y));
+            }
+        }
         return flag;
     }
 }
