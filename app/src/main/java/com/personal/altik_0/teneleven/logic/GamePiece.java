@@ -11,6 +11,10 @@ public abstract class GamePiece {
         return pieceGrid[x][y];
     }
 
+    public int getSize() {
+        return Math.max(getWidth(), getHeight());
+    }
+
     public int getWidth() {
         return pieceGrid.length;
     }

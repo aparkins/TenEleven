@@ -1,61 +1,32 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".GameActivity">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/scoreText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:textColor="#FFCCCCCC"
         android:textSize="24pt"
         android:textAlignment="center"
         android:gravity="center" />
 
-    <TableLayout
-        android:id="@+id/gridTable"
+    <FrameLayout
+        android:id="@+id/gridFrame"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:stretchColumns="1"
-        android:layout_below="@id/scoreText">
-    </TableLayout>
+        android:layout_height="0dp"
+        android:layout_weight="3"/>
 
     <LinearLayout
-        android:id="@+id/handContainer"
+        android:id="@+id/handLayout"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/gridTable"
-        android:baselineAligned="false">
-
-        <TableLayout
-            android:id="@+id/pieceGridTable1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:stretchColumns="1"
-            android:layout_margin="10dp">
-        </TableLayout>
-
-        <TableLayout
-            android:id="@+id/pieceGridTable2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:stretchColumns="1"
-            android:layout_margin="10dp">
-        </TableLayout>
-
-        <TableLayout
-            android:id="@+id/pieceGridTable3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:stretchColumns="1"
-            android:layout_margin="10dp">
-        </TableLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

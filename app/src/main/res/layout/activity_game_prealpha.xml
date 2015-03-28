@@ -1,0 +1,61 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".GameActivity">
+
+    <TextView
+        android:id="@+id/scoreText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24pt"
+        android:textAlignment="center"
+        android:gravity="center" />
+
+    <TableLayout
+        android:id="@+id/gridTable"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1"
+        android:layout_below="@id/scoreText">
+    </TableLayout>
+
+    <LinearLayout
+        android:id="@+id/handContainer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/gridTable"
+        android:baselineAligned="false">
+
+        <TableLayout
+            android:id="@+id/pieceGridTable1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:stretchColumns="1"
+            android:layout_margin="10dp">
+        </TableLayout>
+
+        <TableLayout
+            android:id="@+id/pieceGridTable2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:stretchColumns="1"
+            android:layout_margin="10dp">
+        </TableLayout>
+
+        <TableLayout
+            android:id="@+id/pieceGridTable3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:stretchColumns="1"
+            android:layout_margin="10dp">
+        </TableLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
