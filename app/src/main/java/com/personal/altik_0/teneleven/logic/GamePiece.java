@@ -6,6 +6,7 @@ package com.personal.altik_0.teneleven.logic;
 public abstract class GamePiece implements GameGrid {
 
     protected int[][] pieceGrid;
+    protected GameMode mode;
 
     public int getEntry(int x, int y) {
         return pieceGrid[x][y];
@@ -49,7 +50,22 @@ public abstract class GamePiece implements GameGrid {
         }
     }
 
+    protected abstract int[] COLORS();
+
     public int[][] getGrid() {
         return pieceGrid;
+    }
+
+    protected int getColor() {
+        int index = getSize();
+        if (mode == GameMode.AKIRA)
+            index += 6;
+        if (mode == GameMode.KURATA)
+            index += 12;
+        int color = COLORS()[index];
+        if (mode == GameMode.SAI) {
+            color = (color & 0x00FFFFFF) | (0x88000000);
+        }
+        return color;
     }
 }

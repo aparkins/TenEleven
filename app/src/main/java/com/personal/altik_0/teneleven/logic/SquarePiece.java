@@ -5,12 +5,19 @@ package com.personal.altik_0.teneleven.logic;
  */
 public class SquarePiece extends GamePiece {
 
-    private static final int[] COLORS = { 0, 0xFF00FF66, 0xFF66FFAA, 0xFF88FFCC };
+    @Override
+    protected int[] COLORS() {
+        return new int[] { 0, 0xFF00FF66, 0xFF66FFAA, 0xFF88FFCC, 0, 0,     // NORMAL
+                           0, 0xFF22CC55, 0xFF33EE77, 0xFF55FF88, 0, 0,     // AKIRA
+                           0, 0xFF777777, 0xFF777777, 0xFF777777, 0, 0,     // KURATA
+        };
+    }
 
-    public SquarePiece(int size) {
+    public SquarePiece(int size, GameMode _mode) {
+        mode = _mode;
         pieceGrid = new int[size][size];
         for (int x = 0; x < size; x++)
             for (int y = 0; y < size; y++)
-                pieceGrid[x][y] = COLORS[size];
+                pieceGrid[x][y] = getColor();
     }
 }

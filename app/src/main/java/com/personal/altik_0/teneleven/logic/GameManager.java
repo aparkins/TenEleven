@@ -15,36 +15,44 @@ public class GameManager {
     private GameBoard board;
     private ArrayList<GamePiece> hand;
     private int score;
+    private GameMode mode;
 
-    public GameManager() {
+    public GameManager(GameMode _mode) {
         int handSize = 3;
         r = new Random();
         hand = new ArrayList<>(handSize);
         for (int i = 0; i < handSize; i++)
             hand.add(null);
+        mode = _mode;
         resetGame();
     }
 
     public GameManager(Bundle saveData) {
         score = saveData.getInt("score");
+        mode = (GameMode)saveData.getSerializable("gameMode");
         int handSize = saveData.getInt("handSize");
         hand = new ArrayList<>(handSize);
         r = new Random();
         for (int i = 0; i < handSize; i++) {
             int[][] pieceGrid = (int[][])saveData.getSerializable("piece" + i);
             if (pieceGrid != null)
-                hand.add(new ReloadedPiece(pieceGrid));
+                hand.add(new ReloadedPiece(pieceGrid, mode));
             else
                 hand.add(null);
         }
         int[][] boardGrid = (int[][])saveData.getSerializable("gameGrid");
-        board = new GameBoard(boardGrid);
+        board = new GameBoard(boardGrid, mode);
     }
 
     public void resetGame() {
-        board = new GameBoard(10, 10);
+        board = new GameBoard(10, 10, mode);
         score = 0;
         refillHand();
+    }
+
+    public void resetGame(GameMode _mode) {
+        mode = _mode;
+        resetGame();
     }
 
     public GameBoard getGameBoard() {
@@ -64,16 +72,16 @@ public class GameManager {
         switch (r.nextInt(3)) {
             // Square:
             case 0:
-                newPiece = new SquarePiece(r.nextInt(3) + 1);
+                newPiece = new SquarePiece(r.nextInt(3) + 1, mode);
                 break;
             // Line:
             case 1:
-                newPiece = new LinePiece(r.nextInt(4) + 2);
+                newPiece = new LinePiece(r.nextInt(4) + 2, mode);
                 break;
             // Elbow:
             case 2:
             default:
-                newPiece = new ElbowPiece(r.nextInt(2) + 2);
+                newPiece = new ElbowPiece(r.nextInt(2) + 2, mode);
                 break;
         }
         newPiece.rotatePiece(r.nextInt(4));
@@ -99,6 +107,10 @@ public class GameManager {
     public int tryPlayPiece(int handPos, Point gameGridPos) {
         if (hand.get(handPos) == null)
             return 0;
+
+        if (mode == GameMode.AKIRA)
+            gameGridPos = new Point(gameGridPos.y, gameGridPos.x);
+
         int points = board.tryPlacePiece(hand.get(handPos), gameGridPos);
         if (points > 0) {
             score += points;
@@ -119,6 +131,7 @@ public class GameManager {
         Bundle bundle = new Bundle();
         bundle.putInt("score", score);
         bundle.putInt("handSize", hand.size());
+        bundle.putSerializable("gameMode", mode);
         bundle.putSerializable("gameGrid", board.getGrid());
         for (int i = 0; i < hand.size(); i++) {
             GamePiece piece = hand.get(i);

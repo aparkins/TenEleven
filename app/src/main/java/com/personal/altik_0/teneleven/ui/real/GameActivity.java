@@ -12,18 +12,20 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.personal.altik_0.teneleven.R;
 import com.personal.altik_0.teneleven.logic.GameBoard;
 import com.personal.altik_0.teneleven.logic.GameManager;
+import com.personal.altik_0.teneleven.logic.GameMode;
 import com.personal.altik_0.teneleven.logic.GamePiece;
 import com.personal.altik_0.teneleven.ui.real.views.game.GridView;
 
 import java.util.List;
 
-public class GameActivity extends Activity {
+public class GameActivity extends Activity implements OptionsDialogFragment.OnSelectOptionListener {
 
     GameManager manager;
 
@@ -47,7 +49,7 @@ public class GameActivity extends Activity {
             Bundle gameData = savedInstanceState.getBundle("gameData");
             manager = new GameManager(gameData);
         } else {
-            manager = new GameManager();
+            manager = new GameManager(GameMode.NORMAL);
         }
 
 
@@ -56,7 +58,7 @@ public class GameActivity extends Activity {
         display.getSize(size);
 
         int minDim = Math.min(size.x, size.y);
-        SQUARE_DIM = minDim * 0.06f;
+        SQUARE_DIM = minDim * 0.055f;
 
         View topLayer = findViewById(R.id.gameLayout);
         topLayer.setOnDragListener(new View.OnDragListener() {
@@ -71,6 +73,22 @@ public class GameActivity extends Activity {
             }
         });
 
+        initializeGameView();
+        initializeGearIcon();
+    }
+
+    private void initializeGearIcon() {
+        ImageButton gear = (ImageButton)findViewById(R.id.optionsButton);
+        gear.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OptionsDialogFragment optionsMenu = new OptionsDialogFragment();
+                optionsMenu.show(getFragmentManager(), "Menu Dialog Fragment");
+            }
+        });
+    }
+
+    private void initializeGameView() {
         initializeBoardGrid();
         initializeHandLayout();
         refreshGameScore();
@@ -183,5 +201,12 @@ public class GameActivity extends Activity {
     private GridView createGridFromPiece(GamePiece piece) {
         GridView newView = new GridView(this, piece, 0, SQUARE_DIM);
         return newView;
+    }
+
+    @Override
+    public void optionSelected(GameMode mode) {
+        manager.resetGame(mode);
+        initializeBoardGrid();
+        refreshGameViews();
     }
 }

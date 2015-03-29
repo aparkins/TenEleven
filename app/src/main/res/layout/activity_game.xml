@@ -5,6 +5,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <ImageButton
+        android:id="@+id/optionsButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:src="@drawable/gear"
+        android:contentDescription="Options"
+        android:background="@null"/>
+
     <TextView
         android:id="@+id/scoreText"
         android:layout_width="fill_parent"

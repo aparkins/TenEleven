@@ -11,13 +11,16 @@ import java.util.Stack;
 public class GameBoard implements GameGrid {
 
     private int[][] grid;
+    private GameMode mode;
 
-    public GameBoard(int width, int height) {
+    public GameBoard(int width, int height, GameMode _mode) {
         grid = new int[width][height];
+        mode = _mode;
     }
 
-    public GameBoard(int[][] initGrid) {
+    public GameBoard(int[][] initGrid, GameMode _mode) {
         grid = initGrid;
+        mode = _mode;
     }
 
     public int getEntry(int x, int y) {
@@ -111,6 +114,7 @@ public class GameBoard implements GameGrid {
                 flag &= !(piece.getEntry(x - position.x, y - position.y) != 0 && getEntry(x, y) != 0);
             }
         }
+        flag |= (mode == GameMode.SAI);
         return flag;
     }
 

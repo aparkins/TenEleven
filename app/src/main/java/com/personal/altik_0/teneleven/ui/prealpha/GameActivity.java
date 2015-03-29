@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
@@ -16,6 +14,7 @@ import android.widget.TextView;
 import com.personal.altik_0.teneleven.R;
 import com.personal.altik_0.teneleven.logic.GameBoard;
 import com.personal.altik_0.teneleven.logic.GameManager;
+import com.personal.altik_0.teneleven.logic.GameMode;
 import com.personal.altik_0.teneleven.logic.GamePiece;
 
 
@@ -124,7 +123,7 @@ public class GameActivity extends Activity {
 
         setContentView(R.layout.activity_game_prealpha);
 
-        manager = new GameManager();
+        manager = new GameManager(GameMode.NORMAL);
         // Score
         updateScoreDisplay();
         // Game Grid
