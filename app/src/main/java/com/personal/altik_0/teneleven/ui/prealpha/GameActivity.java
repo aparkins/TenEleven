@@ -75,8 +75,8 @@ public class GameActivity extends Activity {
             TableRow row = (TableRow)gridTable.getChildAt(x);
             for (int y = 0; y < board.getHeight(); y++) {
                 View gridEntry = row.getChildAt(y);
-                if (board.getEntry(x, y)) {
-                    gridEntry.getBackground().setColorFilter(0xFFFF0000, PorterDuff.Mode.MULTIPLY);
+                if (board.getEntry(x, y) != 0) {
+                    gridEntry.getBackground().setColorFilter(board.getEntry(x, y), PorterDuff.Mode.MULTIPLY);
                 } else {
                     gridEntry.getBackground().setColorFilter(null);
                 }
@@ -98,7 +98,7 @@ public class GameActivity extends Activity {
                 TableRow row = new TableRow(this);
                 for (int y = 0; y < piece.getHeight(); y++) {
                     View gridEntry;
-                    if (piece.getEntry(x, y)) {
+                    if (piece.getEntry(x, y) != 0) {
                         gridEntry = new Button(this);
                         gridEntry.setOnClickListener(getHandOnClickListener(handPos));
                     } else {

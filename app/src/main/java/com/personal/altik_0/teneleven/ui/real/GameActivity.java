@@ -1,10 +1,12 @@
 package com.personal.altik_0.teneleven.ui.real;
 
-import android.app.ActionBar;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -13,12 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.personal.altik_0.teneleven.R;
-import com.personal.altik_0.teneleven.logic.ElbowPiece;
 import com.personal.altik_0.teneleven.logic.GameBoard;
 import com.personal.altik_0.teneleven.logic.GameManager;
 import com.personal.altik_0.teneleven.logic.GamePiece;
-import com.personal.altik_0.teneleven.logic.LinePiece;
 import com.personal.altik_0.teneleven.ui.real.views.game.GridView;
+import com.personal.altik_0.teneleven.ui.real.views.game.HandGridViewDragListener;
 
 import java.util.List;
 
@@ -46,28 +47,18 @@ public class GameActivity extends Activity {
         int minDim = Math.min(size.x, size.y);
         SQUARE_DIM = minDim * 0.06f;
 
-        initializeHandLayout();
         initializeBoardGrid();
+        initializeHandLayout();
         refreshGameScore();
     }
 
     private void initializeBoardGrid() {
         GameBoard board = manager.getGameBoard();
         int defaultColor = BACKGROUND_COLOR | 0x00444444;
-        GridView boardGrid = new GridView(this, board.getWidth(), board.getHeight(), defaultColor, SQUARE_DIM);
+        GridView boardGrid = new GridView(this, board, defaultColor, SQUARE_DIM);
         boardGrid.setId(R.id.boardView);
         FrameLayout boardFrame = (FrameLayout)findViewById(R.id.gridFrame);
         boardFrame.addView(boardGrid);
-        refreshBoardGrid();
-    }
-
-    private void refreshBoardGrid() {
-        GameBoard board = manager.getGameBoard();
-        GridView boardGrid = (GridView)findViewById(R.id.boardView);
-        for (int x = 0; x < board.getWidth(); x++)
-            for (int y = 0; y < board.getHeight(); y++)
-                if (!board.getEntry(x,y))
-                    boardGrid.unsetEntry(x,y);
     }
 
     private void initializeHandLayout() {
@@ -98,46 +89,44 @@ public class GameActivity extends Activity {
         }
     }
 
-    private void addPieceToHand(GamePiece piece, int handPos) {
+    private void addPieceToHand(GamePiece piece, final int handPos) {
         LinearLayout handLayout = (LinearLayout)findViewById(R.id.handLayout);
         if (piece != null) {
             FrameLayout pieceFrame = (FrameLayout)handLayout.getChildAt(handPos);
-            pieceFrame.addView(createGridFromPiece(piece));
+            GridView pieceView = createGridFromPiece(piece);
+            pieceFrame.addView(pieceView);
 
-            // TODO: events
+            GridView boardGrid = (GridView)findViewById(R.id.boardView);
+            HandGridViewDragListener listener = new HandGridViewDragListener(manager);
+            pieceView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        GridView gv = (GridView) v;
+                        Point p = gv.getGridPositionForScreenPosition(event.getX(), event.getY());
+                        if (p.x >= 0 && p.x < gv.getGridWidth() && p.y >= 0 && p.y < gv.getGridHeight()) {
+                            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+                            Intent intent = new Intent();
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("draggingIndexX", p.x);
+                            bundle.putInt("draggingIndexY", p.y);
+                            bundle.putInt("handPosition", handPos);
+                            intent.putExtras(bundle);
+                            ClipData cd = ClipData.newIntent("gamePieceData", intent);
+                            v.startDrag(cd, shadowBuilder, v, 0);
+                            v.setVisibility(View.INVISIBLE);
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
+            boardGrid.setOnDragListener(listener);
         }
     }
 
     private GridView createGridFromPiece(GamePiece piece) {
-        GridView newView = new GridView(this, piece.getWidth(), piece.getHeight(), 0, SQUARE_DIM);
-        int fillColor = getFillColorFromPiece(piece);
-        for (int x = 0; x < piece.getWidth(); x++)
-            for (int y = 0; y < piece.getHeight(); y++)
-                if (piece.getEntry(x, y))
-                    newView.setEntry(x, y, fillColor);
+        GridView newView = new GridView(this, piece, 0, SQUARE_DIM);
         return newView;
-    }
-
-    private int getFillColorFromPiece(GamePiece piece) {
-        int color = 0xFF000000;
-        int sizeMask = piece.getSize();
-        if (piece instanceof ElbowPiece) {
-            color |= 0x00cc8800;
-            sizeMask |= (sizeMask & 1) << 2;
-        } else if (piece instanceof LinePiece) {
-            color |= 0x0000cc88;
-            sizeMask <<= 1;
-        } else { //piece instanceof SquarePiece
-            color |= 0x008800cc;
-            sizeMask |= sizeMask << 2;
-            sizeMask &= 0xC;
-        }
-
-        sizeMask |= sizeMask << 4;
-        sizeMask |= sizeMask << 8;
-        sizeMask |= sizeMask << 16;
-        color |= sizeMask;
-
-        return color;
     }
 }

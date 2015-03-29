@@ -8,15 +8,15 @@ import java.util.Stack;
 /**
  * Created by Altik_0 on 3/25/2015.
  */
-public class GameBoard {
+public class GameBoard implements GameGrid {
 
-    private boolean[][] grid;
+    private int[][] grid;
 
     public GameBoard(int width, int height) {
-        grid = new boolean[width][height];
+        grid = new int[width][height];
     }
 
-    public boolean getEntry(int x, int y) {
+    public int getEntry(int x, int y) {
         return grid[x][y];
     }
 
@@ -33,7 +33,7 @@ public class GameBoard {
         for (int x = 0; x < getWidth(); x++) {
             boolean flag = true;
             for (int y = 0; y < getHeight(); y++)
-                if (!grid[x][y]) {
+                if (grid[x][y] != 0) {
                     flag = false;
                     break;
                 }
@@ -49,7 +49,7 @@ public class GameBoard {
         for (int y = 0; y < getHeight(); y++) {
             boolean flag = true;
             for (int x = 0; x < getWidth(); x++)
-                if (!grid[x][y]) {
+                if (grid[x][y] != 0) {
                     flag = false;
                     break;
                 }
@@ -78,10 +78,10 @@ public class GameBoard {
         // clear out the appropriate columns and rows:
         for (Integer col : clearedCols)
             for (int y = 0; y < getHeight(); y++)
-                grid[col][y] = false;
+                grid[col][y] = 0;
         for (Integer row : clearedRows)
             for (int x = 0; x < getWidth(); x++)
-                grid[x][row] = false;
+                grid[x][row] = 0;
 
         return points;
     }
@@ -104,7 +104,7 @@ public class GameBoard {
             for (int y = position.y; y < position.y + piece.getHeight(); y++) {
                 if (x >= getWidth() || y >= getHeight())
                     return false;
-                flag &= !(piece.getEntry(x - position.x, y - position.y) && getEntry(x, y));
+                flag &= !(piece.getEntry(x - position.x, y - position.y) != 0 && getEntry(x, y) != 0);
             }
         }
         return flag;
