@@ -33,7 +33,7 @@ public class GameBoard implements GameGrid {
         for (int x = 0; x < getWidth(); x++) {
             boolean flag = true;
             for (int y = 0; y < getHeight(); y++)
-                if (grid[x][y] != 0) {
+                if (grid[x][y] == 0) {
                     flag = false;
                     break;
                 }
@@ -49,7 +49,7 @@ public class GameBoard implements GameGrid {
         for (int y = 0; y < getHeight(); y++) {
             boolean flag = true;
             for (int x = 0; x < getWidth(); x++)
-                if (grid[x][y] != 0) {
+                if (grid[x][y] == 0) {
                     flag = false;
                     break;
                 }
@@ -102,7 +102,7 @@ public class GameBoard implements GameGrid {
         boolean flag = true;
         for (int x = position.x; x < position.x + piece.getWidth(); x++) {
             for (int y = position.y; y < position.y + piece.getHeight(); y++) {
-                if (x >= getWidth() || y >= getHeight())
+                if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
                     return false;
                 flag &= !(piece.getEntry(x - position.x, y - position.y) != 0 && getEntry(x, y) != 0);
             }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
+import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -19,7 +20,6 @@ import com.personal.altik_0.teneleven.logic.GameBoard;
 import com.personal.altik_0.teneleven.logic.GameManager;
 import com.personal.altik_0.teneleven.logic.GamePiece;
 import com.personal.altik_0.teneleven.ui.real.views.game.GridView;
-import com.personal.altik_0.teneleven.ui.real.views.game.HandGridViewDragListener;
 
 import java.util.List;
 
@@ -47,6 +47,19 @@ public class GameActivity extends Activity {
         int minDim = Math.min(size.x, size.y);
         SQUARE_DIM = minDim * 0.06f;
 
+        View topLayer = findViewById(R.id.gameLayout);
+        topLayer.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                if (event.getAction() == DragEvent.ACTION_DRAG_EXITED ||
+                    event.getAction() == DragEvent.ACTION_DRAG_ENDED ||
+                    event.getAction() == DragEvent.ACTION_DROP) {
+                    refreshGameViews();
+                }
+                return true;
+            }
+        });
+
         initializeBoardGrid();
         initializeHandLayout();
         refreshGameScore();
@@ -58,7 +71,29 @@ public class GameActivity extends Activity {
         GridView boardGrid = new GridView(this, board, defaultColor, SQUARE_DIM);
         boardGrid.setId(R.id.boardView);
         FrameLayout boardFrame = (FrameLayout)findViewById(R.id.gridFrame);
+        boardFrame.removeAllViews();
         boardFrame.addView(boardGrid);
+
+        boardGrid.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                if (event.getAction() == DragEvent.ACTION_DROP) {
+                    ClipData cd = event.getClipData();
+                    Bundle bundle = cd.getItemAt(0).getIntent().getExtras();
+                    Point draggingIndex = new Point(bundle.getInt("draggingIndexX"), bundle.getInt("draggingIndexY"));
+                    int handPosition = bundle.getInt("handPosition");
+                    GridView gv = (GridView) v;
+                    Point droppingIndex = gv.getGridPositionForScreenPosition(event.getX(), event.getY());
+                    Point playPosition = new Point(droppingIndex.x - draggingIndex.x, droppingIndex.y - draggingIndex.y);
+                    manager.tryPlayPiece(handPosition, playPosition);
+                    refreshGameViews();
+                    return true;
+                } else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void initializeHandLayout() {
@@ -91,13 +126,12 @@ public class GameActivity extends Activity {
 
     private void addPieceToHand(GamePiece piece, final int handPos) {
         LinearLayout handLayout = (LinearLayout)findViewById(R.id.handLayout);
+        FrameLayout pieceFrame = (FrameLayout)handLayout.getChildAt(handPos);
+        pieceFrame.removeAllViews();
         if (piece != null) {
-            FrameLayout pieceFrame = (FrameLayout)handLayout.getChildAt(handPos);
             GridView pieceView = createGridFromPiece(piece);
             pieceFrame.addView(pieceView);
 
-            GridView boardGrid = (GridView)findViewById(R.id.boardView);
-            HandGridViewDragListener listener = new HandGridViewDragListener(manager);
             pieceView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -105,7 +139,8 @@ public class GameActivity extends Activity {
                         GridView gv = (GridView) v;
                         Point p = gv.getGridPositionForScreenPosition(event.getX(), event.getY());
                         if (p.x >= 0 && p.x < gv.getGridWidth() && p.y >= 0 && p.y < gv.getGridHeight()) {
-                            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+                            View.DragShadowBuilder shadowBuilder = new GridView.GridViewShadowBuilder(v,
+                                    new Point(Math.round(event.getX()), Math.round(event.getY())));
                             Intent intent = new Intent();
                             Bundle bundle = new Bundle();
                             bundle.putInt("draggingIndexX", p.x);
@@ -121,8 +156,17 @@ public class GameActivity extends Activity {
                     return false;
                 }
             });
-            boardGrid.setOnDragListener(listener);
         }
+    }
+
+    private void refreshGameViews() {
+        if (!manager.checkPossiblePlays()) {
+            manager.resetGame();
+            initializeBoardGrid();
+        }
+        findViewById(R.id.boardView).invalidate();
+        refreshHandLayout();
+        refreshGameScore();
     }
 
     private GridView createGridFromPiece(GamePiece piece) {

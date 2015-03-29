@@ -110,7 +110,18 @@ public class GridView extends View {
         return grid.getHeight();
     }
 
-    public int getDefaultColor() {
-        return defaultColor;
+    public static class GridViewShadowBuilder extends View.DragShadowBuilder {
+        private Point initialTouchPoint;
+
+        public GridViewShadowBuilder(View v, Point _initialTouchPoint) {
+            super(v);
+            initialTouchPoint = _initialTouchPoint;
+        }
+
+        @Override
+        public void onProvideShadowMetrics (Point shadowSize, Point shadowTouchPoint) {
+            super.onProvideShadowMetrics(shadowSize, shadowTouchPoint);
+            shadowTouchPoint.set(initialTouchPoint.x, initialTouchPoint.y);
+        }
     }
 }
