@@ -10,6 +10,7 @@ public class SquarePiece extends GamePiece {
         return new int[] { 0, 0xFF00FF66, 0xFF66FFAA, 0xFF88FFCC, 0, 0,     // NORMAL
                            0, 0xFF22CC55, 0xFF33EE77, 0xFF55FF88, 0, 0,     // AKIRA
                            0, 0xFF777777, 0xFF777777, 0xFF777777, 0, 0,     // KURATA
+                           0, 0xFF101010, 0xFF181818, 0xFF202020, 0, 0,     // SHINDO
         };
     }
 

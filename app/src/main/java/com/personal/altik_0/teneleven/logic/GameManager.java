@@ -144,4 +144,8 @@ public class GameManager {
         }
         return bundle;
     }
+
+    public GameMode getMode() {
+        return mode;
+    }
 }

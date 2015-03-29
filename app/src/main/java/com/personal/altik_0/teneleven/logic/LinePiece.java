@@ -10,6 +10,7 @@ public class LinePiece extends GamePiece {
         return new int[] { 0, 0, 0xFFFF0088, 0xFFFF3388, 0xFFFF66AA, 0xFFFF88CC,    // NORMAL
                            0, 0, 0xFF2255AA, 0xFF3377CC, 0xFF4488EE, 0xFF6699FF,    // AKIRA
                            0, 0, 0xFF777777, 0xFF777777, 0xFF777777, 0xFF777777,    // KURATA
+                           0, 0, 0xFF101010, 0xFF181818, 0xFF202020, 0xFF282828,    // SHINDO
         };
     }
 

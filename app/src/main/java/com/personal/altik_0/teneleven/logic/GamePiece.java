@@ -62,6 +62,8 @@ public abstract class GamePiece implements GameGrid {
             index += 6;
         if (mode == GameMode.KURATA)
             index += 12;
+        if (mode == GameMode.SHINDO)
+            index += 18;
         int color = COLORS()[index];
         if (mode == GameMode.SAI) {
             color = (color & 0x00FFFFFF) | (0x88000000);

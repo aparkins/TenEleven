@@ -97,8 +97,10 @@ public class GameActivity extends Activity implements OptionsDialogFragment.OnSe
     private void initializeBoardGrid() {
         GameBoard board = manager.getGameBoard();
         int defaultColor = BACKGROUND_COLOR | 0x00444444;
-        GridView boardGrid = new GridView(this, board, defaultColor, SQUARE_DIM);
+        final GridView boardGrid = new GridView(this, board, defaultColor, SQUARE_DIM);
         boardGrid.setId(R.id.boardView);
+        if (manager.getMode() == GameMode.SHINDO)
+            boardGrid.setSparkEnabled(true);
         FrameLayout boardFrame = (FrameLayout)findViewById(R.id.gridFrame);
         boardFrame.removeAllViews();
         boardFrame.addView(boardGrid);
@@ -169,7 +171,8 @@ public class GameActivity extends Activity implements OptionsDialogFragment.OnSe
                         Point p = gv.getGridPositionForScreenPosition(event.getX(), event.getY());
                         if (p.x >= 0 && p.x < gv.getGridWidth() && p.y >= 0 && p.y < gv.getGridHeight()) {
                             View.DragShadowBuilder shadowBuilder = new GridView.GridViewShadowBuilder(v,
-                                    new Point(Math.round(event.getX()), Math.round(event.getY())));
+                                    new Point(Math.round(event.getX()), Math.round(event.getY())),
+                                    manager.getMode() == GameMode.SHINDO);
                             Intent intent = new Intent();
                             Bundle bundle = new Bundle();
                             bundle.putInt("draggingIndexX", p.x);

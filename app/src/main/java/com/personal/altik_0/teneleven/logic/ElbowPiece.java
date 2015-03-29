@@ -10,6 +10,7 @@ public class ElbowPiece extends GamePiece {
         return new int[] { 0, 0, 0xFF88FF00, 0xFFCCFF66, 0, 0,      // NORMAL
                            0, 0, 0xFF99FFFF, 0xFFCCFFFF, 0, 0,      // AKIRA
                            0, 0, 0xFF777777, 0xFF777777, 0, 0,      // KURATA
+                           0, 0, 0xFFEEEE00, 0xFFFFFF55, 0, 0,      // SHINDO
         };
     }
 
