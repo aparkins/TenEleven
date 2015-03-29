@@ -48,4 +48,8 @@ public abstract class GamePiece implements GameGrid {
             pieceGrid = newGrid;
         }
     }
+
+    public int[][] getGrid() {
+        return pieceGrid;
+    }
 }

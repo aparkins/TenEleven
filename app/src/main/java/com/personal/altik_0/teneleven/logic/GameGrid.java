@@ -7,4 +7,5 @@ public interface GameGrid {
     int getWidth();
     int getHeight();
     int getEntry(int x, int y);
+    int[][] getGrid();
 }

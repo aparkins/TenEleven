@@ -1,6 +1,7 @@
 package com.personal.altik_0.teneleven.logic;
 
 import android.graphics.Point;
+import android.os.Bundle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,22 @@ public class GameManager {
         for (int i = 0; i < handSize; i++)
             hand.add(null);
         resetGame();
+    }
+
+    public GameManager(Bundle saveData) {
+        score = saveData.getInt("score");
+        int handSize = saveData.getInt("handSize");
+        hand = new ArrayList<>(handSize);
+        r = new Random();
+        for (int i = 0; i < handSize; i++) {
+            int[][] pieceGrid = (int[][])saveData.getSerializable("piece" + i);
+            if (pieceGrid != null)
+                hand.add(new ReloadedPiece(pieceGrid));
+            else
+                hand.add(null);
+        }
+        int[][] boardGrid = (int[][])saveData.getSerializable("gameGrid");
+        board = new GameBoard(boardGrid);
     }
 
     public void resetGame() {
@@ -96,5 +113,22 @@ public class GameManager {
             return points;
         }
         return 0;
+    }
+
+    public Bundle saveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("score", score);
+        bundle.putInt("handSize", hand.size());
+        bundle.putSerializable("gameGrid", board.getGrid());
+        for (int i = 0; i < hand.size(); i++) {
+            GamePiece piece = hand.get(i);
+            if (piece != null) {
+                bundle.putSerializable("piece" + i, hand.get(i).getGrid());
+            } else {
+                bundle.putSerializable("piece" + i, null);
+            }
+
+        }
+        return bundle;
     }
 }

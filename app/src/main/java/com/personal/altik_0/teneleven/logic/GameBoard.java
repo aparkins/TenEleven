@@ -16,6 +16,10 @@ public class GameBoard implements GameGrid {
         grid = new int[width][height];
     }
 
+    public GameBoard(int[][] initGrid) {
+        grid = initGrid;
+    }
+
     public int getEntry(int x, int y) {
         return grid[x][y];
     }
@@ -108,5 +112,9 @@ public class GameBoard implements GameGrid {
             }
         }
         return flag;
+    }
+
+    public int[][] getGrid() {
+        return grid;
     }
 }

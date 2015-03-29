@@ -31,6 +31,11 @@ public class GameActivity extends Activity {
     private float SQUARE_DIM;
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBundle("gameData", manager.saveInstanceState());
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -38,7 +43,13 @@ public class GameActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_game);
 
-        manager = new GameManager();
+        if (savedInstanceState != null && savedInstanceState.getBundle("gameData") != null) {
+            Bundle gameData = savedInstanceState.getBundle("gameData");
+            manager = new GameManager(gameData);
+        } else {
+            manager = new GameManager();
+        }
+
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
